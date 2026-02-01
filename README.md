@@ -197,23 +197,62 @@ Higher lr → fast but unstable
 # Training Loop
 ```
 epochs = 10
+```
+epochs is a hyperparameter defining how many full passes are made over the training dataset.
+```
 
 for epoch in range(epochs):
     model.train()
+```
+• Loops over the dataset multiple times    
+• model.train() activates training mode (important for dropout / batch normalization)   
+```
 
     for images, labels in train_loader:
+```
+• Iterates over mini-batches instead of the full dataset    
+• Improves memory efficiency and training stability   
+```
         images = images.to(device)
         labels = labels.to(device)
+```
+• Transfers data to CPU or GPU     
+• Required for GPU acceleration    
+```
 
         outputs = model(images)
+```
+• Forward propagation    
+• Images pass through convolution, pooling, and fully connected layers    
+• Output is a tensor of class scores (logits)    
+```
         loss = criterion(outputs, labels)
+```
+• Computes error using CrossEntropyLoss   
+• Compares predicted scores with true labels   
+```
 
         optimizer.zero_grad()
+```
+• Clears old gradients from previous iteration   
+• Prevents gradient accumulation   
+```
         loss.backward()
+```
+• Backpropagation step    
+• Computes gradients of loss w.r.t. all trainable parameters   
+```
         optimizer.step()
+```
+• Updates model weights using Adam optimizer    
+• Learning rate controls update magnitude    
+```
 
     print(f"Epoch {epoch+1}, Loss: {loss.item():.4f}")
 ```
+• Displays training progress    
+• Helps detect underfitting or divergence   
+
 <img width="357" height="110" alt="Screenshot 2026-02-01 at 10 50 45 PM" src="https://github.com/user-attachments/assets/7243cef9-740b-454b-bd87-a872d497629f" />   
 
 # Model Evaluation
