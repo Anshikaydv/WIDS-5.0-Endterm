@@ -38,17 +38,28 @@ Key Hyperparameter: batch_size
 Batch size controls how many samples are processed before updating weights.  
 ```
 batch_size = 64
-
+```
+• Larger batch size → faster computation but higher memory usage   
+• Smaller batch size → noisier gradients but better generalization   
+```
 train_dataset = torchvision.datasets.MNIST(
     root="dataset",
     train=True,
     transform=transforms.ToTensor(),
     download=True
 )
-
+```
+• torchvision.datasets.MNIST – Loads the MNIST dataset   
+• root="dataset" – Directory where data is stored   
+• train=True – Uses training split    
+• transform=ToTensor() – Converts image to tensor and normalizes pixels     
+• download=True – Downloads data if missing    
+```
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-
-
+```
+• Splits data into mini-batches    
+• Shuffling avoids learning order bias    
+```
 test_dataset = torchvision.datasets.MNIST(
     root="dataset",
     train=False,
@@ -58,6 +69,8 @@ test_dataset = torchvision.datasets.MNIST(
 
 test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 ```
+• train=False loads test data    
+• No shuffling during evaluation    
 Why normalization (ToTensor)?  
 It converts pixel values from [0,255] → [0,1], improving training stability.  
 
@@ -65,9 +78,16 @@ It converts pixel values from [0,255] → [0,1], improving training stability.
 This is the most important section, where most hyperparameters appear.
 ```
 class CNN(nn.Module):
+```
+• Creates a custom CNN model
+```
     def __init__(self):
         super(CNN, self).__init__()
+```
+• Initializes layers and registers parameters   
 
+First Convolution Layer   
+```
         self.conv1 = nn.Conv2d(
             in_channels=1,
             out_channels=8,
@@ -75,7 +95,15 @@ class CNN(nn.Module):
             stride=1,
             padding=1
         )
+```
+• Input channels = 1 (grayscale)   
+• Output channels = 8 (learned features)    
+• Kernel size = 3×3   
+• Stride = 1   
+• Padding = 1 (keeps image size)    
 
+Second Convolution Layer   
+```
         self.conv2 = nn.Conv2d(
             in_channels=8,
             out_channels=16,
@@ -83,20 +111,47 @@ class CNN(nn.Module):
             stride=1,
             padding=1
         )
+```
+• Learns deeper and more abstract features    
 
+Pooling Layer
+```
         self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
-        self.fc = nn.Linear(16 * 7 * 7, 10)
+```
+• Reduces spatial resolution by half   
 
+Fully Connected Layer   
+```
+        self.fc = nn.Linear(16 * 7 * 7, 10)
+````
+• Converts extracted features to class scores   
+
+Forward Pass
+```
     def forward(self, x):
         x = F.relu(self.conv1(x))
+```
+Convolution + activation
+```
         x = self.pool(x)
+```
+Downsampling
+```
         x = F.relu(self.conv2(x))
         x = self.pool(x)
+```
+Deeper feature extraction
+```
         x = x.view(x.size(0), -1)
+```
+Flatten tensor
+```
         x = self.fc(x)
         return x
 ```
-# CNN Hyperparameters (Layer‑wise Explanation)  
+Output logits   
+
+# CNN Hyperparameters   
 🔹 Convolution Layer Hyperparameters  
     <img width="596" height="223" alt="Screenshot 2026-02-01 at 10 47 09 PM" src="https://github.com/user-attachments/assets/ad233478-a562-4c2d-bed3-7427992056fa" />   
 Example:  
@@ -106,7 +161,9 @@ Increasing out_channels from 8 → 32 improves feature learning but increases co
  ```
 nn.MaxPool2d(kernel_size=2, stride=2)
 ```
-• Reduces feature map size• Adds translation invariance• Prevents overfitting
+• Reduces feature map size    
+• Adds translation invariance   
+• Prevents overfitting  
 
 🔹 Fully Connected Layer
 ```
