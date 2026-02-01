@@ -190,7 +190,8 @@ Optimizer Hyperparameters
 ```
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 ```
-<img width="448" height="106" alt="Screenshot 2026-02-01 at 10 48 41 PM" src="https://github.com/user-attachments/assets/d96538a4-7bba-45ab-a155-c0d7256f5540" />       
+<img width="448" height="106" alt="Screenshot 2026-02-01 at 10 48 41 PM" src="https://github.com/user-attachments/assets/d96538a4-7bba-45ab-a155-c0d7256f5540" />   
+
 Lower lr → stable but slow learning    
 Higher lr → fast but unstable  
 
